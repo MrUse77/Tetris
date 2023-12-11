@@ -10,6 +10,7 @@ import {
   BOARD_HEIGHT,
   BOARD_WIDTH,
 } from "./utils/consts";
+import { audio } from "./utils/utils";
 //VARIABLES
 const canvas = document.getElementById("tetris") as HTMLCanvasElement;
 const context = canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -22,8 +23,6 @@ let dropCounter = 0;
 const dropInterval = 500; // Time interval in milliseconds
 let lastTime = 0;
 let unpaused: boolean = true;
-const audio = new Audio("./assets/Tetris.mp3");
-audio.volume = 0.1;
 //CANVAS
 canvas.width = BLOCK_SIZE * BOARD_WIDTH;
 canvas.height = BLOCK_SIZE * BOARD_HEIGHT;
@@ -227,4 +226,5 @@ start.addEventListener("click", () => {
   startDiv.remove();
 
   audio.play();
+  audio.loop = true;
 });
