@@ -22,7 +22,7 @@ let dropCounter = 0;
 const dropInterval = 500; // Time interval in milliseconds
 let lastTime = 0;
 let unpaused: boolean = true;
-const audio = new Audio("../public/assets/Tetris.mp3");
+const audio = new Audio("./assets/Tetris.mp3");
 audio.volume = 0.1;
 //CANVAS
 canvas.width = BLOCK_SIZE * BOARD_WIDTH;
