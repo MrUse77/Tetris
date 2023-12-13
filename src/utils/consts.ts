@@ -13,6 +13,13 @@ export const controlls = {
   rotate: "w",
   pause: "p",
 };
+export const controllsMobile = {
+  left: "left",
+  right: "right",
+  down: "down",
+  rotate: "up",
+  pause: "p",
+};
 
 export const colors: Array<string> = [
   "cyan",

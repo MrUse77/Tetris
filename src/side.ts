@@ -7,11 +7,26 @@ function updateScore() {
   document.querySelector<HTMLDivElement>("#side")!.innerHTML = `
   <div id="score"> Score: ${score.value} </div>
 `;
+  //no tiene que existir el div de start-div
+  if (window.innerWidth <= 768) {
+    document.querySelector<HTMLDivElement>("#side")!.innerHTML += `
+  <div id="controlls-movil">
+    <div id="controls-list">
+      <button id="controls-left">  </button>
+      <button id="controls-right">  </button>
+      <button id="controls-rotate"></button>
+      <button id="controls-drop"></button>
+      <button id="controls-pause"></button>
+    </div>
+  </div>
+  `;
+  }
 }
 export function printNextPiece(nextPiece: PiezaTetris) {
   document.querySelector<HTMLDivElement>("#side")!.innerHTML += `
   <canvas id="nextPiece" width="160" height="160"></canvas>
   `;
+
   const nextPieceCanvas =
     document.querySelector<HTMLCanvasElement>("#nextPiece")!;
   const nextPieceContext = nextPieceCanvas.getContext("2d")!;
@@ -62,3 +77,5 @@ function getScore() {
 }
 //acutalizar score.value
 getScore();
+
+//si la resolucion de la pantalla es 768px o menos mostrar controles en pantalla

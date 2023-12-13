@@ -17,6 +17,7 @@ const context = canvas.getContext("2d") as CanvasRenderingContext2D;
 const board = createBoard(BOARD_WIDTH, BOARD_HEIGHT);
 const start = document.querySelector<HTMLDivElement>("#start")!;
 const startDiv = document.querySelector<HTMLDivElement>("#start-div")!;
+
 let sigPieza: PiezaTetris;
 let sigPieza2: boolean = false;
 let dropCounter = 0;
@@ -95,6 +96,7 @@ function drawBoard() {
   drawPieza(pieza);
 }
 //controlls
+//si es pc
 document.addEventListener("keydown", (event) => {
   if (event.key === controlls.left) {
     pieza.Position.x--;
@@ -117,8 +119,74 @@ document.addEventListener("keydown", (event) => {
   if (event.key === controlls.rotate) {
     rotate(pieza);
   }
+  if (event.key === controlls.pause) {
+    unpaused = !unpaused;
+    console.log(unpaused);
+  }
 });
+//controlls movil
+//si es movil android ios etc
+let moveInterval: number;
+if (window.innerWidth <= 768) {
+  //detectar si un boton se mantinen puslado
+  document.addEventListener("touchstart", (event) => {
+    if ((event.target as HTMLElement)?.id === "controls-left") {
+      moveLeft();
+      moveInterval = setInterval(moveLeft, 100);
+    } else if ((event.target as HTMLElement)?.id === "controls-right") {
+      moveRight();
+      moveInterval = setInterval(moveRight, 100);
+    } else if ((event.target as HTMLElement)?.id === "controls-drop") {
+      drop();
+      moveInterval = setInterval(drop, 100);
+    }
+    if ((event.target as HTMLElement)?.id === "controls-rotate") {
+      rotate(pieza);
+      moveInterval = setInterval(() => rotate(pieza), 100);
+    }
+    if ((event.target as HTMLElement)?.id === "controls-pause") {
+      unpaused = !unpaused;
+      audio.pause();
+    }
+  });
+  //detectar si se deja de pulsar
+  document.addEventListener("touchend", (event) => {
+    if ((event.target as HTMLElement)?.id === "controls-left") {
+      clearInterval(moveInterval);
+    } else if ((event.target as HTMLElement)?.id === "controls-right") {
+      clearInterval(moveInterval);
+    } else if ((event.target as HTMLElement)?.id === "controls-drop") {
+      clearInterval(moveInterval);
+    }
+    if ((event.target as HTMLElement)?.id === "controls-rotate") {
+      clearInterval(moveInterval);
+    }
+  });
+}
+function moveLeft() {
+  pieza.Position.x--;
 
+  if (checkCollision(pieza)) {
+    pieza.Position.x++;
+  }
+}
+function moveRight() {
+  pieza.Position.x++;
+  if (checkCollision(pieza)) {
+    pieza.Position.x--;
+  }
+}
+function drop() {
+  pieza.Position.y++;
+
+  if (checkCollision(pieza)) {
+    pieza.Position.y--;
+    solidify(pieza);
+    removeRows();
+  }
+}
+
+//colsiion
 function checkCollision(pieza: PiezaTetris) {
   return pieza.forma.find((row, y) => {
     return row.find((value, x) => {
@@ -144,7 +212,7 @@ function solidify(pieza: PiezaTetris) {
   pieza.Position.x = sigPieza.Position.x;
   pieza.forma = sigPieza.forma;
   pieza.color = sigPieza.color;
-
+  clearInterval(moveInterval);
   sigPieza2 = false;
   setScore();
   //death
@@ -214,17 +282,10 @@ function rotate(pieza: PiezaTetris) {
 }
 //pause
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === controlls.pause) {
-    unpaused = !unpaused;
-    console.log(unpaused);
-  }
-});
 //start
 start.addEventListener("click", () => {
   update();
   startDiv.remove();
-
   audio.play();
   audio.loop = true;
 });
